@@ -85,9 +85,9 @@ function frame(hrt: DOMHighResTimeStamp) {
       for (let x = 0; x < cells[y].length; ++x) {
         const cell = cells[y][x];
 
-        const liveNeighbourCount = directions
-          .map(dir => (cells[y + dir.y] ? cells[y + dir.y][x + dir.x] || 0 : 0))
-          .filter(value => value === State.Live).length;
+        const liveNeighbourCount = directions.filter(
+          dir => (cells[y + dir.y] || [])[x + dir.x] === State.Live,
+        ).length;
 
         /**
          * Any live cell with fewer than two live neighbours dies, as if by underpopulation.
