@@ -1,0 +1,22 @@
+/* Reset */
+* {
+  padding: 0;
+  margin: 0;
+}
+
+#container {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  overflow: hidden;
+}
+
+canvas {
+  image-rendering: pixelated;
+  background: #000000;
+  margin: auto;
+  padding: 0;
+  display: block;
+}
