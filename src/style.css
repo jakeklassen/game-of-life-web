@@ -15,6 +15,7 @@
 
 canvas {
   image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
   background: #000000;
   margin: auto;
   padding: 0;
