@@ -10,7 +10,7 @@ const seed = (arr: Cell[]) => {
 
 const GAME_WIDTH = 320;
 const GAME_HEIGHT = 180;
-const SEED_ITERATIONS = 4500;
+const SEED_ITERATIONS = 5500;
 
 const canvas = document.createElement('canvas') as HTMLCanvasElement;
 canvas.width = GAME_WIDTH;
