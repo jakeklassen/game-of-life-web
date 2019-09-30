@@ -10,7 +10,7 @@ const seed = (arr: Cell[]) => {
 
 const GAME_WIDTH = 320;
 const GAME_HEIGHT = 180;
-const SEED_ITERATIONS = 1;
+const SEED_ITERATIONS = 4500;
 
 const canvas = document.createElement('canvas') as HTMLCanvasElement;
 canvas.width = GAME_WIDTH;
@@ -70,9 +70,9 @@ for (let y = 0; y < GAME_HEIGHT; ++y) {
   }
 }
 
-// for (let i = 0; i < SEED_ITERATIONS; ++i) {
-//   rnd = seed(cells);
-// }
+for (let i = 0; i < SEED_ITERATIONS; ++i) {
+  seed(cells);
+}
 
 let dt = 0;
 let last = performance.now();
@@ -86,66 +86,55 @@ console.log("Conway's Game of Life");
 //   console.log(idx);
 // }
 
-// function frame(hrt: DOMHighResTimeStamp) {
-//   requestAnimationFrame(frame);
+function frame(hrt: DOMHighResTimeStamp) {
+  requestAnimationFrame(frame);
 
-//   dt += (hrt - last) / 1000;
+  dt += (hrt - last) / 1000;
 
-//   if (dt > step) {
-//     dt = 0;
+  if (dt > step) {
+    dt = 0;
 
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     ctx.fillStyle = 'white';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'white';
 
-//     for (const [idx, cell] of cells.entries()) {
-//       const liveNeighbourCount = getNeighbours(
-//         cells,
-//         idx,
-//         GAME_WIDTH,
-//         GAME_HEIGHT,
-//       );
+    for (const [idx, cell] of cells.entries()) {
+      const liveNeighbourCount = getNeighbours(
+        cells,
+        idx,
+        GAME_WIDTH,
+        GAME_HEIGHT,
+      );
 
-//       /**
-//        * Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-//        * Any live cell with two or three live neighbours lives on to the next generation.
-//        * Any live cell with more than three live neighbours dies, as if by overpopulation.
-//        * Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-//        */
+      /**
+       * Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+       * Any live cell with two or three live neighbours lives on to the next generation.
+       * Any live cell with more than three live neighbours dies, as if by overpopulation.
+       * Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+       */
 
-//       // Write to `next` state
-//       if (cell.state === State.Dead) {
-//         if (liveNeighbourCount === 3) {
-//           next[idx].state = State.Live;
-//         }
-//       } else if (cell.state === State.Live) {
-//         if (liveNeighbourCount < 2 || liveNeighbourCount > 3) {
-//           next[idx].state = State.Dead;
-//         }
-//       }
-//     }
+      // Write to `next` state
+      if (cell.state === State.Dead) {
+        if (liveNeighbourCount === 3) {
+          next[idx].state = State.Live;
+        }
+      } else if (cell.state === State.Live) {
+        if (liveNeighbourCount < 2 || liveNeighbourCount > 3) {
+          next[idx].state = State.Dead;
+        }
+      }
+    }
 
-//     // Assign next state and draw
-//     for (const [idx, { x, y, state }] of next.entries()) {
-//       cells[idx] = next[idx];
+    // Assign next state and draw
+    for (const [idx, { x, y, state }] of next.entries()) {
+      cells[idx].state = next[idx].state;
 
-//       if (state === State.Live) {
-//         ctx.fillRect(x, y, 1, 1);
-//       }
-//     }
-//   }
+      if (state === State.Live) {
+        ctx.fillRect(x, y, 1, 1);
+      }
+    }
+  }
 
-//   last = hrt;
-// }
+  last = hrt;
+}
 
-// requestAnimationFrame(frame);
-
-setInterval(() => {
-  const rnd = Math.floor(Math.random() * GAME_HEIGHT * GAME_WIDTH);
-
-  ctx.fillStyle = 'red';
-  ctx.fillRect(cells[rnd].x, cells[rnd].y, 1, 1);
-  ctx.fillStyle = 'white';
-  getNeighbours(cells, rnd, GAME_WIDTH, GAME_HEIGHT).forEach(
-    idx => cells[idx] && ctx.fillRect(cells[idx].x, cells[idx].y, 1, 1),
-  );
-}, 250);
+requestAnimationFrame(frame);

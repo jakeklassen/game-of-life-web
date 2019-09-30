@@ -16,6 +16,5 @@ export const getNeighbours = (
     idx - 1 + width, // southwest
     idx - 1, // west
     idx - 1 - width, // northwest
-  ];
-  //.filter(idx => cells[idx] != null && cells[idx].state === State.Live).length;
+  ].filter(idx => cells[idx] != null && cells[idx].state === State.Live).length;
 };
