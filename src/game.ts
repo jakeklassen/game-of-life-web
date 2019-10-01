@@ -77,7 +77,7 @@ for (let i = 0; i < SEED_ITERATIONS; ++i) {
 
 let dt = 0;
 let last = performance.now();
-const fps = 30;
+const fps = 15;
 const step = 1 / fps;
 
 console.log("Conway's Game of Life");
