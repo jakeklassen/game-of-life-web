@@ -1,5 +1,5 @@
 import { getResolution } from './lib/screen';
-import { getNeighbours } from './lib/1d-array';
+import { getLiveNeighbourCount } from './lib/1d-array';
 
 const seed = (arr: Cell[]) => {
   const idx = Math.floor(Math.random() * arr.length);
@@ -8,9 +8,9 @@ const seed = (arr: Cell[]) => {
   return idx;
 };
 
-const GAME_WIDTH = 320;
-const GAME_HEIGHT = 180;
-const SEED_ITERATIONS = 5500;
+const GAME_WIDTH = parseInt(process.env.GAME_WIDTH!);
+const GAME_HEIGHT = parseInt(process.env.GAME_HEIGHT!);
+const SEED_ITERATIONS = parseInt(process.env.SEED_ITERATIONS!);
 
 const canvas = document.createElement('canvas') as HTMLCanvasElement;
 canvas.width = GAME_WIDTH;
@@ -53,6 +53,7 @@ type Cell = {
 
 const cells: Cell[] = [];
 const next: Cell[] = [];
+const changed: number[] = [];
 
 for (let y = 0; y < GAME_HEIGHT; ++y) {
   for (let x = 0; x < GAME_WIDTH; ++x) {
@@ -71,20 +72,15 @@ for (let y = 0; y < GAME_HEIGHT; ++y) {
 }
 
 for (let i = 0; i < SEED_ITERATIONS; ++i) {
-  seed(cells);
+  changed.push(seed(cells));
 }
 
 let dt = 0;
 let last = performance.now();
-const fps = 10;
+const fps = 30;
 const step = 1 / fps;
 
 console.log("Conway's Game of Life");
-
-// for (const [idx, { state }] of cells.entries()) {
-//   // console.log(gn(idx, GAME_WIDTH, GAME_HEIGHT));
-//   console.log(idx);
-// }
 
 function frame(hrt: DOMHighResTimeStamp) {
   requestAnimationFrame(frame);
@@ -94,16 +90,8 @@ function frame(hrt: DOMHighResTimeStamp) {
   if (dt > step) {
     dt = 0;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = 'white';
-
     for (const [idx, cell] of cells.entries()) {
-      const liveNeighbourCount = getNeighbours(
-        cells,
-        idx,
-        GAME_WIDTH,
-        GAME_HEIGHT,
-      );
+      const liveNeighbourCount = getLiveNeighbourCount(cells, idx);
 
       /**
        * Any live cell with fewer than two live neighbours dies, as if by underpopulation.
@@ -116,20 +104,27 @@ function frame(hrt: DOMHighResTimeStamp) {
       if (cell.state === State.Dead) {
         if (liveNeighbourCount === 3) {
           next[idx].state = State.Live;
+          changed.push(idx);
         }
       } else if (cell.state === State.Live) {
         if (liveNeighbourCount < 2 || liveNeighbourCount > 3) {
           next[idx].state = State.Dead;
+          changed.push(idx);
         }
       }
     }
 
     // Assign next state and draw
-    for (const [idx, { x, y, state }] of next.entries()) {
-      cells[idx].state = next[idx].state;
+    while (changed.length > 0) {
+      const idx = changed.pop()!;
+      const { x, y, state } = next[idx];
+      cells[idx].state = state;
 
       if (state === State.Live) {
+        ctx.fillStyle = 'white';
         ctx.fillRect(x, y, 1, 1);
+      } else {
+        ctx.clearRect(x, y, 1, 1);
       }
     }
   }
