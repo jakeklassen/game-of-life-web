@@ -77,7 +77,7 @@ for (let i = 0; i < SEED_ITERATIONS; ++i) {
 
 let dt = 0;
 let last = performance.now();
-const fps = 15;
+const fps = 10;
 const step = 1 / fps;
 
 console.log("Conway's Game of Life 🌱");
@@ -87,8 +87,8 @@ function frame(hrt: DOMHighResTimeStamp) {
 
   dt += (hrt - last) / 1000;
 
-  if (dt > step) {
-    dt = 0;
+  while (dt > step) {
+    dt -= step;
 
     for (const [idx, cell] of cells.entries()) {
       const liveNeighbourCount = getLiveNeighbourCount(cells, idx);
