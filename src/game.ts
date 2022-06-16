@@ -80,7 +80,7 @@ let last = performance.now();
 const fps = 15;
 const step = 1 / fps;
 
-console.log("Conway's Game of Life");
+console.log("Conway's Game of Life 🌱");
 
 function frame(hrt: DOMHighResTimeStamp) {
   requestAnimationFrame(frame);
