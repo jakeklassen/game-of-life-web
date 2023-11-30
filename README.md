@@ -7,6 +7,6 @@
 ## How to Run
 
 ```shell
-$ yarn
-$ yarn start
+$ npm i
+$ npm start
 ```
